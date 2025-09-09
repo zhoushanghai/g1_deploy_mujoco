@@ -7,7 +7,7 @@ def main():
     parser = argparse.ArgumentParser(description='Export TorchScript model to ONNX')
     parser.add_argument('--jit-path', type=str, default="checkpoint/policy.pt",
                        help='Path to the TorchScript model file (.pt)')
-    parser.add_argument('--onnx-path', type=str, default="onnx_output/policy.onnx",
+    parser.add_argument('--onnx-path', type=str, default="exported/policy.onnx",
                        help='Path for the output ONNX file (default: same directory as jit_path with .onnx extension)')
     parser.add_argument('--input-shape', type=int, nargs='+', default=[1, 480],
                        help='Input shape for the model (default: [1, 480])')

@@ -15,3 +15,5 @@ dependencies:
       - onnxruntime
       - onnxscript
       - argparse
+      - rsl-rl-lib==2.3.1
+      - gymnasium==0.29.1

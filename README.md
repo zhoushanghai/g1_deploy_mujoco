@@ -8,10 +8,18 @@
 
 
 ## ✨ 概览
+This repository provides a lightweight deployment of `Unitree_RL_Lab` training results in Python with `Mujoco`, without requiring `IsaacSim`, `Unitree_RL_Lab`, or `IsaacLab` installations.  
 
-Unitree_RL_Lab 自带 C++ 版本的 Mujoco 部署，本仓库是对 Python 版本 Mujoco 部署的补充。它可以帮助你将 `unitree_rl_lab` 训练出的结果更容易地部署到 Mujoco 环境中。我们提供了一个基础的 G1 29 自由度行走策略(`checkpoint/policy.pt`)供你尝试，你也可以将其替换为自己训练的策略。
+It includes scripts to batch convert training checkpoints into `JIT / ONNX` models, enabling you to train on a server and easily visualize results locally in `Mujoco`.  
 
-Unitree_RL_Lab comes with a C++ implementation of Mujoco deployment, and this repository serves as a Python-based supplement. It helps you more easily deploy the results trained with unitree_rl_lab into the Mujoco environment. We provide a basic G1 29-DoF walking policy (checkpoint/policy.pt) for you to try out, and you can also replace it with your own trained policy.
+A sample G1 29-DoF walking policy (`checkpoint/policy.pt`) is provided for testing, and you can replace it with your own trained policies.
+
++ 本仓库无需依赖 `IsaaSim`, `Unitree_RL_Lab` 和 `IsaacLab` 的安装
++ 为 `Unitree_RL_Lab` 的训练结果，提供 `Mujoco` Python 版本的轻量化部署
++ 为 `Unitree_RL_Lab` 的训练结果，提供批量转换为 `JIT / ONNX` 模型的脚本
++ 应用场景是，在服务器上得到结果训练，拉到在本地，即可直接通过 `Mujoco` 查看训练结果
++ 提供了基础的 G1 29 自由度行走策略(`checkpoint/policy.pt`)供你尝试，你也可以将其替换为自己训练的策略
+
 
 ## 🛠️ 步骤（中文版）
 
@@ -23,18 +31,24 @@ Unitree_RL_Lab comes with a C++ implementation of Mujoco deployment, and this re
     ```
 3. 安装必要环境（如果已安装 Isaac Lab 环境可跳过）：
    ```bash
-    conda env create -f environment.yml
-    conda activate g1_deploy
+   conda env create -f environment.yml
+   conda activate g1_deploy
     ```
 4. 在 Mujoco 模拟器中运行 Sim2Sim，默认策略路径为  `checkpoint/policy.pt`：
    ```bash
-    python deploy_mujoco.py --policy YOUR_POLICY_PATH
-    ```
+   python deploy_mujoco.py --policy YOUR_POLICY_PATH
+   ```
 5. （可选）如需将 JIT 格式策略转换为 ONNX 格式：
    ```bash
-    python convert_jit_to_onnx.py --jit-path YOUR_POLICY_PATH --onnx-path OUTPUT_ONNX_PATH
+   python scripts/convert_jit_to_onnx.py --jit-path YOUR_POLICY_PATH --onnx-path OUTPUT_ONNX_PATH
     ```
+6. （可选）该脚本用于 **将 RSL-RL 的训练 checkpoint 批量转换为可部署的 JIT / ONNX 模型**，无需安装 IsaacSim 或 IsaacLab。  
 
+   ```bash
+   python scripts/batch_processing.py --input_path ORIGINAL_CHECKPOINT_PATH --output_path EXPORTED_PATH
+   ```
+   + `RIGINAL_CHECKPOINT_PATH`: 原始 checkpoint 的路径，可以是单个文件（如 `logs/2025-**/model_**.pt`）、目录（如 `logs/2025-**`），或通配符模式.
+   + `EXPORTED_PATH`: 导出模型保存路径（默认：`./exported/`），也可以指定为任意自定义目录.   
 
 ## 🛠️ Steps (in English)
 
@@ -63,8 +77,16 @@ Unitree_RL_Lab comes with a C++ implementation of Mujoco deployment, and this re
 
 5. **(Optional) Convert JIT → ONNX**  
    ```bash
-   python convert_jit_to_onnx.py --jit-path YOUR_POLICY_PATH --onnx-path OUTPUT_ONNX_PATH
+   python scripts/convert_jit_to_onnx.py --jit-path YOUR_POLICY_PATH --onnx-path EXPORTED_PATH
    ```
+
+6. **(Optional) This script batch converts RSL-RL checkpoints into deployable JIT/ONNX models, without requiring Isaac Sim or Isaac Lab.**  
+
+   ```bash
+   python scripts/batch_processing.py --input_path ORIGINAL_CHECKPOINT_PATH --output_path EXPORTED_PATH
+   ```
+   + `RIGINAL_CHECKPOINT_PATH`: should point to the original checkpoint(s), e.g. a file (`logs/2025-**/model_**.pt`), directory(`logs/2025-**`), or wildcard pattern.
+   + `EXPORTED_PATH`: specifies where the exported models will be saved (default: `./exported/`). You can override it to any custom folder.
 
 ---
 
